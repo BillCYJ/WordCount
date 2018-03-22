@@ -12,7 +12,6 @@ int countFunc(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
 	countFunc(argc, argv);
-	getchar();
 	return 0;
 }
 
@@ -61,14 +60,14 @@ void CountWord()
 {
 	charsCount = 0,wordsCount = 0,linesCount = 0;
 	char c;
-	//fgetc函数：读到文件末尾或者读取出错时返回EOF
+	//fgetc函数：读到文件末尾或者读取出错时返回-1
 	while ((c = fgetc(file)) != -1) //循环读取整个文本里的字符
 	{
 		charsCount++;//字符数+1
 		if (!isSep(c)) //不是分隔符的话，那就是单词的一个字符
 		{
 			wordsCount++;//单词数+1
-			while ((c = fgetc(file)) != -1) //循环读取某个单词里的字符
+			while ((c = fgetc(file)) != -1) //循环读取该单词里的字符
 			{
 				charsCount++;//字符数+1
 				if (isEndline(c))//新行
@@ -76,7 +75,7 @@ void CountWord()
 					linesCount++;//行数+1
 					break;
 				}
-				else if (isSpace(c) || isComma(c) || isTab(c))
+				else if (isSpace(c) || isTab(c) || isComma(c))
 				{
 					break;//该单词结束了
 				}
@@ -85,9 +84,7 @@ void CountWord()
 		else if (isEndline(c))//是分隔符，且为换行符
 			linesCount++;//行数+1
 	}
-
-	if (charsCount != 0)
-		linesCount++;//最后一行没有换行符，也要算上该行
+	charsCount == 0 ? linesCount=0 : ++linesCount;//最后一行没有换行符，也要算上该行
 }
 
 //文件的输入输出
@@ -128,7 +125,7 @@ int countFunc(int argc, char *argv[])
 		{
 			if (i == 0)
 			{
-				cout << "No exe" << endl;
+				cout << "No .exe" << endl;
 				return 0;
 			}
 			else if (_cIndex == 0)
@@ -169,7 +166,6 @@ int countFunc(int argc, char *argv[])
 				cout << "Repeated parameters" << endl;
 				return 0;
 			}
-
 		}
 		else if (i != 0 && i <= 4 && argv[i][0] != '-'&& inputFile == nullptr)//如果参数为输出文件名
 		{
@@ -178,9 +174,9 @@ int countFunc(int argc, char *argv[])
 	}
 
 	//-o不为第一个参数，且是除了输出文件名外的最后一个参数
-	if (_oIndex != 0 && (_oIndex < _cIndex || _oIndex < _wIndex || _oIndex < _lIndex))
+	if ((_oIndex < _cIndex || _oIndex < _wIndex || _oIndex < _lIndex)&& _oIndex != 0)
 	{
-		cout << "-o should be the last parameter" << endl;
+		cout << "-o Not the last parameter" << endl;
 		return 0;
 	}
 
@@ -191,6 +187,7 @@ int countFunc(int argc, char *argv[])
 	}
 
 	file = fopen(inputFile, "r");//读取input file
+
 	if (file == nullptr)
 	{
 		cout << "Can not open input file." << endl;
@@ -209,7 +206,7 @@ int countFunc(int argc, char *argv[])
 			cout << "charsCount:" << charsCount << endl;
 			if (resFile.is_open())
 			{
-				resFile << inputFile << ", 字符数：" << charsCount << "\n" << endl;
+				resFile << inputFile << ", 字符数：" << charsCount << endl;
 			}
 		}
 		else if (strcmp(argv[i], "-w") == 0)
@@ -217,7 +214,7 @@ int countFunc(int argc, char *argv[])
 			cout << "wordsCount:" << wordsCount << endl;
 			if (resFile.is_open())
 			{
-				resFile << inputFile << ", 单词数：" << wordsCount << "\n" << endl;
+				resFile << inputFile << ", 单词数：" << wordsCount << endl;
 			}
 		}
 		else if (strcmp(argv[i], "-l") == 0)
@@ -225,7 +222,7 @@ int countFunc(int argc, char *argv[])
 			cout << "linesCount:" << linesCount << endl;
 			if (resFile.is_open())
 			{
-				resFile << inputFile << ", 行数：" << linesCount << "\n" << endl;
+				resFile << inputFile << ", 行数：" << linesCount << endl;
 			}
 		}
 		else if (argv[i][0] == '-' && strcmp(argv[i], "-o") != 0)
