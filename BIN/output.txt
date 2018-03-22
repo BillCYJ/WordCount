@@ -1,3 +1,0 @@
-input.txt, 字符数：41
-input.txt, 单词数：8
-input.txt, 行数：10

@@ -12,6 +12,7 @@ int countFunc(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
 	countFunc(argc, argv);
+	getchar();
 	return 0;
 }
 
